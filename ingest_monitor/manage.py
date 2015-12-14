@@ -8,7 +8,8 @@ from flask_script.commands import ShowUrls#, Clean
 from .app import create_app
 from .extensions import DB
 from . import models
-from .monitor.cons import test
+from .monitor.alerts import alert_forever
+from .monitor.channels import update_forever
 
 
 console = logging.StreamHandler()
@@ -52,9 +53,15 @@ def create_tables():
 
 
 @manager.command
-def watch_channels():
+def updater():
     log.debug('Channel watcher waiting for JSON on stdin...')
-    test()
+    update_forever()
+
+
+@manager.command
+def alerter():
+    log.debug('Channel alerter waiting for JSON on stdin...')
+    alert_forever()
 
 
 def main():
