@@ -1,0 +1,103 @@
+<%!
+    import urllib 
+%>
+
+   <html>
+
+    <head>
+    <link href="/static/ingest.css" rel="stylesheet" type="text/css" />
+    <script src="/static/jquery-1.6.min.js"></script>
+    <script src="/static/jquery-ui.min.js"></script>
+    <script type="text/javascript" language="javascript" src="/static/jquery.dataTables.js"></script>
+
+    <script src="/static/code.js"></script>
+    <script src="/static/moment.js"></script>
+    <link href="/static/ui.all.css" rel="stylesheet" type="text/css" />
+    <link href="/static/jquery.dataTables.css" rel="stylesheet" type="text/css" />
+    <script>
+    function refresh_function(){
+        window.location = location.href;
+    }
+
+    $(document).ready(function() {
+       $('#datatable').dataTable( {
+         "iDisplayLength": 50,
+         "aLengthMenu": [[25, 50, 100, -1], [25, 50, 100, "All"]]
+       });
+       setInterval("refresh_function();",30000); 
+
+    });
+     </script>
+</head>
+<body class="body">
+       <div class="gray rounded">
+           <div><img src="static/cognitive-networks-cmyk.png" width="120" height="52" style="vertical-align:middle"/>
+           <span style="font-size:24pt;vertical-align:middle">Cognitive Networks Ingestion Monitor</span>
+           </div>
+           <div style="border-top: solid 1px #a0a0a0;height:20px;width:100%">
+           </div>
+       </div>
+
+        <div class="gray rounded">
+           <table>
+             <tr>
+             <td width="200px"><a href="/location">Home</a></td>
+             </tr>
+           </table>
+        </div>
+
+        <div class="border rounded" style="padding:20px 20px 40px 20px;height:100%">
+
+        <div class="wrapright">
+        <div class="right">
+
+        <div style="padding-top:20px">
+        <form action="search">
+        Search Term: <input type="text" name="term" id="term" title="Search term">
+        <input type="submit" value="submit">
+        </form>
+        </div>
+
+% if model is not None:
+        <h4>${title}</h4>
+        <table id="datatable" class="table" border=1px>
+        <thead>
+        <th>Location</th>
+        <th>Hostname</th>
+        <th>IP Address</th>
+        <th>Channel</th>
+        </thead>
+        <tbody id="fbody">
+% for row in model:
+      ${makerow(row)}
+% endfor
+        </tbody>
+        </table>
+% endif
+
+       </div>
+       </div>
+       <div class="left rounded gray">
+           <h4>View</h4>
+           <ul style="list-style:none;margin:0;padding:0">
+             <li><a href="/location">> Locations</a></li>
+           </ul>
+           <h4>Actions</h4>
+       
+           <ul style="list-style:none;margin:0;padding:0">
+             <li><a href="/deletechannels">> Delete Channels</a></li>
+           </ul>
+       </div>
+
+
+        </div>
+</body>
+
+<%def name="makerow(i)">
+    <tr>
+    <td>${i['Location']}</td>
+    <td><a href="${i['URL']}">${i['Hostname']}</td>
+    <td>${i['IPAddress']}</td>
+    <td>${i['Channel']}</td>
+    </tr>
+</%def>

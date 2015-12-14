@@ -1,0 +1,71 @@
+   <html>
+
+    <head>
+    <link href="/static/ingest.css" rel="stylesheet" type="text/css" />
+    <link href="/static/imagewall.css" rel="stylesheet" type="text/css" />
+    <script src="/static/jquery-1.6.min.js"></script>
+    <script src="/static/jquery-ui.min.js"></script>
+    <script src="/static/imagewall.js"></script>
+    <script src="/static/moment.js"></script>
+
+    <script src="/static/code.js"></script>
+    <link href="/static/ui.all.css" rel="stylesheet" type="text/css" />
+    <script>
+    function refresh_function(){
+        window.location = location.href;
+    }
+
+    $(document).ready(function() {
+        $("#gallery").imageWall({
+             showNumbers: true,
+             showCaptions: true
+        });
+
+       setInterval("refresh_function();",30000); 
+
+       var d = moment(); 
+       var u = d.utc();
+       var now = d.format("YYYY-MM-DD HH:mm:ss");
+       $('#time').text(now);
+    });
+     </script>
+</head>
+<body class="body">
+       <div class="gray rounded">
+           <div><img src="static/cognitive-networks-cmyk.png" width="120" height="52" style="vertical-align:middle"/>
+           <span style="font-size:24pt;vertical-align:middle">Cognitive Networks Ingestion Monitor</span>
+           </div>
+           <div style="border-top: solid 1px #a0a0a0;height:20px;width:100%">
+           </div>
+       </div>
+
+        <div class="gray rounded">
+           <table>
+           <tr>
+              <td width="250px"><a href="/location">Locations</a></a>
+              <td width="250px"><a href="/${view}?name=${IPAddress}">List View</a></td>
+           </tr>
+           </table>
+        </div>
+
+        <div class="border rounded" style="padding:20px 20px 40px 20px;">
+
+        <h2>${title}</h2>
+        <p>Last Update: <span id="time"></span></p>
+
+<ul id="gallery" class="imageWall">
+% for row in channellist:
+      ${makerow(row)}
+% endfor
+</ul>
+
+        </div>
+</body>
+
+<%def name="makerow(i)">
+    <li>
+    <a href="http://${i['IPAddress']}:8080/images/${i['ProcessID']}">
+    <img src="http://${i['IPAddress']}:8080/images/${i['ProcessID']}?type=thumbnail" width="284" height="160" alt='${i['Title']}' title="${i['Channel']} (${i['Hostname']}, ${i['IPAddress']})" border="0" />
+    </a>
+    </li>
+</%def>

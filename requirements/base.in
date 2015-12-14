@@ -1,0 +1,16 @@
+# Terribly old versions for terrible old app
+asq
+CherryPy
+Mako
+
+peewee
+requests
+
+Flask
+Flask-Assets
+Flask-DebugToolbar
+Flask-Script
+
+python-consul
+-e git://github.com/ariscn/pygerduty.git#egg=pygerduty
+slacker

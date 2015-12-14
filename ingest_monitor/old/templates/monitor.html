@@ -1,0 +1,134 @@
+   <html>
+
+    <head>
+    <link href="/static/ingest.css" rel="stylesheet" type="text/css" />
+    <script src="/static/jquery-1.6.min.js"></script>
+    <script src="/static/jquery-ui.min.js"></script>
+    <script type="text/javascript" language="javascript" src="/static/jquery.dataTables.js"></script>
+
+    <script src="/static/code.js"></script>
+    <script src="/static/moment.js"></script>
+    <link href="/static/ui.all.css" rel="stylesheet" type="text/css" />
+    <link href="/static/jquery.dataTables.css" rel="stylesheet" type="text/css" />
+    <script>
+    function refresh_function(){
+        window.location = location.href;
+    }
+
+    $(document).ready(function() {
+       $('#datatable').dataTable( {
+         "iDisplayLength": 25,
+         "aLengthMenu": [[25, 50, 100, -1], [25, 50, 100, "All"]]
+       });
+       setInterval("refresh_function();",30000); 
+
+       var d = moment(); 
+       var u = d.utc();
+       var now = d.format("YYYY-MM-DD HH:mm:ss");
+       $('#time').text(now);
+    });
+     </script>
+</head>
+<body class="body">
+<%
+#def AlarmTypeToString(a):
+#    values = ['Content ID Null', 'No Signal', 'No Updates']
+#    return values[a]
+#
+#def AlarmsToString(i):
+#    alarms=""
+#    if (i is not None):
+#        for a in i.keys():
+#           alarms = alarms + "'{0}' {1} ".format(AlarmTypeToString(int(a)), i[a])
+#    return alarms
+
+%>
+
+       <div class="gray rounded">
+           <div><img src="static/cognitive-networks-cmyk.png" width="120" height="52" style="vertical-align:middle"/>
+           <span style="font-size:24pt;vertical-align:middle">Cognitive Networks Ingestion Monitor</span>
+           </div>
+           <div style="border-top: solid 1px #a0a0a0;height:20px;width:100%">
+           </div>
+       </div>
+
+        <div class="gray rounded">
+           <table>
+             <tr>
+             <td width="200px"><a href="/location">Home</a></td>
+             </tr>
+           </table>
+        </div>
+
+        <div class="border rounded" style="padding:20px 20px 40px 20px;height:100%">
+        
+        <div class="wrapright">
+        <div class="right">
+        <h2>Server: ${IPAddress}</h2>
+
+        <p>Last Update: <span id="time"></span></p>
+
+        <table id="datatable" class="table" border=1px>
+        <thead>
+        <th>Hostname</th>
+        <th>Location</th>
+        <th>IP Address</th>
+        <th>Process ID</th>
+        <th>Channel</th>
+        <th>Content ID</th>
+        <th>Start</th>
+        <th>Duration</th>
+        <th>Title</th>
+        <th>Signal</th>
+        <th>Errors</th>
+        <th>Last Update</th>
+        </thead>
+        <tbody id="fbody">
+% for row in channellist:
+ <%
+#      i = channellist[row]
+#      alarms=""
+#      if (i['Alarms']):
+#        alarms=AlarmsToString(i['Alarms'])
+#      else:
+#      alarms="None"
+ %>
+      ${makerow(row)}
+% endfor
+        </tbody>
+        </table>
+       </div>
+       </div>
+       <div class="left border rounded gray">
+           <h4>View</h4>
+           <ul style="list-style:none;margin:0;padding:0">
+             <li><a href="/location">> Locations</a></li>
+             <li><a href="/server?name=${IPAddress}&thumbnails=1">> Thumbnails</a></li>
+             <li><a href="/alarms">> Alarms</a></li>
+             <li><a href="/datadogs">> Datadogs</a></li>
+           <h4>Actions</h4>
+           <ul style="list-style:none;margin:0;padding:0">
+             <li><a href="/server?name=${IPAddress}&deletechannels=1">> Delete Channels</a></li>
+             <li><a href="/search">> Search</a><li>
+           </ul>
+       </div>
+
+        </div>
+</body>
+
+<%def name="makerow(i)">
+    <tr>
+    <td>${i['Hostname']}</td>
+    <td>${i['Location']}</td>
+    <td><a href="http://${i['IPAddress']}:8080/images/${i['ProcessID']}">${i['IPAddress']}</td>
+    <td>${i['ProcessID']}</td>
+    <td>${i['Channel']}</td>
+    <td>${i['ContentID']}</td>
+    <td>${i['Start']}</td>
+    <td>${i['Duration']}</td>
+    <td>${i['Title']}</td>
+    <td>${i['Signal']}</td>
+    <td>${i['Errors']}</td>
+    <td>${i['LastUpdate']}</td>
+    </tr>
+</%def>
